@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Management System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #36454f;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      
+    }
+    h1,h2{
+      color: #FFE6E6;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #FFE6E6;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button.create {
+      background-color: #E1AFD1;
+      color: #FFE6E6;
+    }
+    button.read {
+      background-color: #AD88C6;
+      color: #FFE6E6;
+    }
+    button.delete {
+      background-color: #7469B6;
+      color: #FFE6E6;
+    }
+    .file-list {
+      margin-top: 20px;
+    }
+    .file-item {
+      padding: 10px;
+      border: 2px solid #FFE6E6;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      color:#FFE6E6;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>File Management System</h1>
+    <form id="createForm">
+      <input type="text" id="createFileName" placeholder="Enter file name" required>
+      <textarea id="createFileContent" placeholder="Enter file content" rows="4" required></textarea>
+      <button type="submit" class="create">Create File</button>
+    </form>
+    <form id="readForm">
+      <input type="text" id="readFileName" placeholder="Enter file name to read" required>
+      <button type="submit" class="read">Read File</button>
+    </form>
+    <form id="deleteForm">
+      <input type="text" id="deleteFileName" placeholder="Enter file name to delete" required>
+      <button type="submit" class="delete">Delete File</button>
+    </form>
+    <div class="file-list" id="fileList">
+      <h2>Files Created</h2>
+      <div id="files"></div>
+    </div>
+  </div>
+  <script>
+    document.getElementById('createForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const fileName = document.getElementById('createFileName').value;
+      const fileContent = document.getElementById('createFileContent').value;
+
+      fetch(`/create/${fileName}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ content: fileContent })
+      })
+      .then(response => response.text())
+      .then(data => {
+        alert(data);
+        document.getElementById('files').innerHTML += `<div class="file-item" id="${fileName}">${fileName}</div>`;
+        document.getElementById('createForm').reset();
+      });
+    });
+
+    document.getElementById('readForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const fileName = document.getElementById('readFileName').value;
+
+      fetch(`/read/${fileName}`)
+        .then(response => response.text())
+        .then(data => {
+          alert(data);
+          document.getElementById('readForm').reset();
+        });
+    });
+
+    document.getElementById('deleteForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const fileName = document.getElementById('deleteFileName').value;
+
+      fetch(`/delete/${fileName}`, { method: 'DELETE' })
+        .then(response => response.text())
+        .then(data => {
+          alert(data);
+          const fileItem = document.getElementById(fileName);
+          if (fileItem) {
+            fileItem.remove();
+          }
+          document.getElementById('deleteForm').reset();
+        });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "filemanagementsystem",
+  "version": "1.0.0",
+  "description": "This is CSI Assignment-2",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Soumyajit Biswas",
+  "license": "MIT"
+}
